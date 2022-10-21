@@ -1,0 +1,65 @@
+
+<% if current_restaurante.order.first %>
+<% if current_restaurante.order.first.estado != "haciendo pedido" %>
+
+<h1>Mis ordenes</h1>
+
+<table class="table table-striped table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Platos</th>
+      <th>Precio</th>
+      <th>Medio pago</th>
+      <th>Direccion</th>
+      <th>Hora entrega</th>
+      <th>Estado</th>
+      <th>Info</th>
+      <th>Usuario</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% current_restaurante.order.each do |order| %>
+      <tr>
+        <td>
+
+  <% cantidades = {} %>
+  <% order.plato.each do |plato| %>
+  <% if not plato.nombre.in? cantidades.keys %>
+    <% cantidades[plato.nombre] = 1 %>
+  <% else %>
+    <% cantidades[plato.nombre] = cantidades[plato.nombre] + 1 %>
+  <% end %>
+<% end %>
+  <% cantidades.keys.each do |key| %>
+  <%= key + " x "%>
+  <%= cantidades[key] %><br>
+  <% end %>
+
+        </td>
+        <td><%= order.precio %></td>
+        <td><%= order.medio_pago %></td>
+        <td><%= order.direccion %></td>
+        <td><%= order.hora_entrega %></td>
+        <td><%= order.estado %></td>
+        <td><%= order.info %></td>
+        <td><%= order.user.nombre %></td>
+        <% if order.estado == "pedido enviado a restaurante" %>
+        <td><%= link_to "<button class='btn btn-success'>Tomar pedido</button>".html_safe, edit_order_path(order) %> </td>
+        <% end %>
+        <% if order.estado == "pedido tomado por restaurante" %>
+        <td><%= link_to "<button class='btn btn-warning'>Marcar como pedido enviado</button>".html_safe, enviar_pedido_path(order), method: :post %></td>
+        <% end %>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+  <% else %>
+  <br>
+    <strong>Aun no tienes ordenes</strong><br>
+  <br>
+  <br>
+<% end %>
+<% end %>

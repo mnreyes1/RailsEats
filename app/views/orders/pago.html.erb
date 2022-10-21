@@ -1,0 +1,100 @@
+<% @restaurante = Restaurante.find(params[:restaurante_id]) %>
+<% order = current_user.order.find_by({:restaurante_id => @restaurante.id, :estado => "haciendo pedido"}) %>
+
+<% cantidades = {} %>
+<% precios = {} %>
+<% order.plato.each do |plato| %>
+  <% if not plato.nombre.in? cantidades.keys %>
+    <% cantidades[plato.nombre] = 1 %>
+    <% precios[plato.nombre] = plato.precio %>
+  <% else %>
+    <% cantidades[plato.nombre] = cantidades[plato.nombre] + 1 %>
+  <% end %>
+<% end %>
+
+<% total = 0 %>
+<% precios.keys.each do |plato| %>
+  <% total = total + precios[plato] * cantidades[plato] %>
+<% end %>
+
+
+<%= form_with(model: order, local: true) do |form| %>
+  <% if order.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(order.errors.count, "error") %> prohibited this order from being saved:</h2>
+
+      <ul>
+      <% order.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+<table class="table table-striped table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Plato</th>
+      <th>Precio unitario</th>
+      <th>Cantidad</th>
+      <th>Precio</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% cantidades.each do |plato_aux| %>
+      <tr>
+      <% plato = Plato.find_by({:nombre => plato_aux, :restaurante_id => @restaurante.id}) %>
+        <td><%= plato.nombre %></td>
+        <td><%= plato.precio %></td>
+        <td><%= cantidades[plato.nombre] %></td>
+        <td><%= plato.precio * cantidades[plato.nombre].to_i %></td>
+      </tr>
+    <% end %>
+    <tr><td></td><td></td><td></td><td></td></tr>
+  </tbody>
+  <br>
+  <tfoot>
+    <th> Total a pagar: </th>
+    <td><%= total %></td>
+  </tfoot>
+</table>
+  <div class="field">
+    <%= form.hidden_field :precio, value: total %>
+  </div>
+
+<br>
+
+  <div class="field">
+    <%= form.label :medio_de_pago %><br>
+    <%= form.select :medio_pago, ['Efectivo', 'Tarjeta de credito', 'Tarjeta de debito']%>
+  </div>
+
+<br>
+
+  <div class="field">
+    <%= form.label :direccion %><br>
+    <%= form.text_area :direccion, value: current_user.direccion %>
+  </div>
+
+  <div class="field">
+    <%= form.hidden_field :estado, value: "pedido enviado a restaurante" %>
+  </div>
+
+  <div class="field">
+    <%= form.label :info %><br>
+    <%= form.text_area :info %>
+  </div>
+
+  <div class="field">
+    <%= form.hidden_field :user_id, value: current_user.id %>
+  </div>
+
+  <div class="field">
+    <%= form.hidden_field :restaurante_id, value: @restaurante.id %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit "Realizar pedido" %>
+  </div>
+<% end %>

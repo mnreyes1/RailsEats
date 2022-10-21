@@ -1,0 +1,54 @@
+<%= form_with(model: plato, local: true) do |form| %>
+  <% if plato.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(plato.errors.count, "error") %> prohibited this plato from being saved:</h2>
+
+      <ul>
+      <% plato.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+  <% if current_restaurante %>
+    <%= form.hidden_field :restaurante_id, value: current_restaurante.id %>
+  <% else %>
+    <%= form.hidden_field :restaurante_id, value: plato.restaurante.id %>
+  <% end %>
+  </div>
+
+  <div class="field">
+    <%= form.label :nombre %><br>
+    <%= form.text_field :nombre %>
+  </div>
+
+  <div class="field">
+    <%= form.label :precio %><br>
+    <%= form.number_field :precio %>
+  </div>
+
+  <div class="field">
+    <%= form.label :descripcion %><br>
+    <%= form.text_field :descripcion %>
+  </div>
+
+  <div class="field">
+    <%= form.label :n_personas %><br>
+    <%= form.number_field :n_personas %>
+  </div>
+
+  <div class="field">
+    <%= form.label :Foto %>
+    <%= form.file_field :photo %><br>
+  </div>
+
+  <div class="field">
+    <%= form.hidden_field :valoracion, value: 0 %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>

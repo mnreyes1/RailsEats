@@ -1,0 +1,19 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  fecha: MyString
+  hora: MyString
+  contenido: MyString
+  puntaje: 1
+  user: one
+  restaurante: one
+  plato: one
+
+two:
+  fecha: MyString
+  hora: MyString
+  contenido: MyString
+  puntaje: 1
+  user: two
+  restaurante: two
+  plato: two

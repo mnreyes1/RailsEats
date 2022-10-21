@@ -1,0 +1,60 @@
+<% @date = Time.new %>
+<% @fecha = @date.day.to_s + "/" + @date.month.to_s + "/" + @date.year.to_s %>
+<% @hora = @date.hour.to_s + ":" + @date.min.to_s %>
+
+
+<%= form_with(model: comentario, local: true) do |form| %>
+  <% if comentario.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(comentario.errors.count, "error") %> prohibited this comentario from being saved:</h2>
+
+      <ul>
+      <% comentario.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= form.hidden_field :fecha, value: @fecha %>
+  </div>
+
+  <div class="field">
+    <%= form.hidden_field :hora, value: @hora %>
+  </div>
+
+  <br>
+  <br>
+
+  <div class="field">
+    <%= form.label :nuevo_comentario %><br>
+    <%= form.text_area :contenido %>
+  </div>
+
+  <div class="field">
+    <%= form.label :puntaje %><br>
+    <%= form.number_field :puntaje, :min => 0, :max => 5 %>
+  </div>
+
+  <div class="field">
+    <%= form.hidden_field :user_id, value: current_user.id %>
+  </div>
+
+<% if @restaurante %>
+  <div class="field">
+    <%= form.hidden_field :restaurante_id, value: @restaurante.id %>
+  </div>
+<% end %>
+
+
+<% if @plato %>
+  <div class="field">
+    <%= form.hidden_field :plato_id, value: @plato.id %>
+  </div>
+<% end %>
+
+  <div class="actions">
+    <%= form.submit "Crear comentario", class: 'btn btn-primary' %>
+  </div>
+<% end %>

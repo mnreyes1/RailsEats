@@ -1,0 +1,23 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  plato: one
+  precio: 1.5
+  medio_pago: MyString
+  direccion: MyText
+  hora_entrega: 2019-10-09 21:56:33
+  estado: MyString
+  info: MyText
+  user: one
+  restaurante: one
+
+two:
+  plato: two
+  precio: 1.5
+  medio_pago: MyString
+  direccion: MyText
+  hora_entrega: 2019-10-09 21:56:33
+  estado: MyString
+  info: MyText
+  user: two
+  restaurante: two

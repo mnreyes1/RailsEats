@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Proyecto</title>
+  <%= csrf_meta_tags %>
+  <%= csp_meta_tag %>
+
+  <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+  <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+</head>
+
+<body>
+
+  <div class="sidebar">
+    
+  <%= link_to "Inicio", home_index_path, class: "btn btn-link" %>
+
+<% if can? :manage, :all %>
+<%= link_to "Usuarios", users_path, class: "btn btn-link" %>
+<%= link_to "Restaurantes", restaurantes_path, class: "btn btn-link" %>
+<%= link_to "Platos", platos_path, class: "btn btn-link" %>
+<%= link_to "Ordenes", orders_path, class: "btn btn-link" %>
+<%= link_to "Comentarios", comentarios_path, class: "btn btn-link" %>
+<%= link_to "Solicitudes Restaurantes", solicitudes_path, class: "btn btn-link" %>
+<% end %>
+
+<% if can? :update, current_user and cannot? :manage, :all%>
+<%= link_to "Mis pedidos", pedidos_usuario_path, class: "btn btn-link" %>
+<%= link_to "Mis restaurantes favoritos", fav_path, class: "btn btn-link" %>
+<% end %>
+
+<% if current_restaurante %>
+<%= link_to "Mis platos", mis_platos_path, class: "btn btn-link" %>
+<%= link_to "Mis comentarios", mis_comentarios_path, class: "btn btn-link" %>
+<%= link_to "Mis ordenes", mis_ordenes_path, class: "btn btn-link" %>
+<% end %>
+  </div>
+
+  <div class="content">
+
+  <!-- creamos una barra de botones -->
+  <ul class="tab">
+  
+    <% if user_signed_in? %>
+    <!-- creamos boton salir (log out) -->
+      <%= link_to "<button class='btn btn-primary', style='float: right;'>Cerrar Sesion</button>".html_safe, destroy_user_session_path, method: :delete %>
+      <%= link_to "<button class='btn btn-primary', style='float: right;'>Editar cuenta/Borrar cuenta</button>".html_safe, edit_user_registration_path %>
+    <% elsif restaurante_signed_in? %>
+      <%= link_to "<button class='btn btn-primary', style='float: right;'>Cerrar Sesion</button>".html_safe, destroy_restaurante_session_path, method: :delete %>
+      <%= link_to "<button class='btn btn-primary', style='float: right;'>Editar Restaurant/Borrar Restaurant</button>".html_safe, edit_restaurante_registration_path %>
+    <% else %>
+      <%= link_to "<button class='btn btn-primary', style='float: right;'>Solicitar Creacion Restaurante</button>".html_safe, new_restaurante_registration_path %>
+      <%= link_to "<button class='btn btn-primary', style='float: right;'>Iniciar Sesion Restaurante</button>".html_safe, new_restaurante_session_path %>
+      <%= link_to "<button class='btn btn-primary', style='float: right;'>Registrarse</button>".html_safe, new_user_registration_path %>
+      <%= link_to "<button class='btn btn-primary', style='float: right;'>Iniciar Sesion</button>".html_safe, new_user_session_path %>
+    <% end %>
+  </ul>
+  <br>
+
+  <%= yield %>
+</body>
+
+</html>

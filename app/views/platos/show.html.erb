@@ -1,0 +1,71 @@
+<p>
+  <strong>Nombre:</strong>
+  <%= @plato.nombre %>
+</p>
+
+<p>
+  <strong>Precio:</strong>
+  <%= @plato.precio %>
+</p>
+
+<p>
+  <strong>Descripcion:</strong>
+  <%= @plato.descripcion %>
+</p>
+
+<p>
+  <strong>N personas:</strong>
+  <%= @plato.n_personas %>
+</p>
+
+<p>
+  <strong>Imagenes:</strong>
+  <%= @plato.imagenes %>
+</p>
+
+<% if @plato.photo.attached? %>
+  <image src="<%= (url_for(@plato.photo))%>", height="200", width="200"></image>
+<% end %>
+
+<p>
+  <strong>Valoracion:</strong>
+  <%= @plato.valoracion %>
+</p>
+
+<p>
+  <strong>Restaurante:</strong>
+  <%= @plato.restaurante.nombre %>
+</p>
+
+<%if @plato.comentario.first%>
+ <table class="table table-striped table-bordered table-condensed">
+  <tr>
+    <th><strong>Comentarios:</strong></th>
+  </tr>
+
+  <% @plato.comentario.each do |comentario| %>
+  <tr>
+    <td class="td-name"><%= comentario.user.nombre+':' %></td>
+    <td><%= comentario.contenido %></td>
+    <td align='right'><%= comentario.fecha %></td>
+    <td align='left'><%= comentario.hora %></td>
+    <% if can? :edit, comentario %>
+    <td align='right', width='10%'><%= link_to "<button>Editar</button>".html_safe, edit_comentario_path(comentario) %></td>
+    <% end %>
+  </tr>
+  <% end %>
+</table> 
+<% else %>
+<br>
+  <strong>El plato aun no tiene comentarios</strong><br>
+
+<% end %>
+
+<% if can? :create, Comentario and cannot? :manage, :all %>
+<% @comentario = Comentario.new %>
+<%= render 'comentarios/form', comentario: @comentario %>
+<% end %>
+
+<br>
+
+<%= link_to "<button class='btn btn-primary'>Volver</button>".html_safe, 'javascript:history.go(-1);' %>

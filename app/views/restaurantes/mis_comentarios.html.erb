@@ -1,0 +1,24 @@
+<%if current_restaurante.comentario.first %>
+ <table class="table table-striped table-bordered table-condensed">
+  <tr>
+    <th><strong>Comentarios:</strong></th>
+  </tr>
+
+  <% current_restaurante.comentario.each do |comentario| %>
+  <tr>
+    <td class="td-name"><%= comentario.user.nombre+':' %></td>
+    <td><%= comentario.contenido %></td>
+    <td align='right'><%= comentario.fecha %></td>
+    <td align='left'><%= comentario.hora %></td>
+    <% if can? :edit, comentario %>
+    <td align='right', width='10%'><%= link_to "<button>Editar</button>".html_safe, edit_comentario_path(comentario) %></td>
+    <% end %>
+  </tr>
+  <% end %>
+</table> 
+<% else %>
+<br>
+  <strong>El restaurante aun no tiene comentarios</strong><br>
+<br>
+<br>
+<% end %>

@@ -1,0 +1,40 @@
+<p>
+  <strong>Fecha:</strong>
+  <%= @comentario.fecha %>
+</p>
+
+<p>
+  <strong>Hora:</strong>
+  <%= @comentario.hora %>
+</p>
+
+<p>
+  <strong>Contenido:</strong>
+  <%= @comentario.contenido %>
+</p>
+
+<p>
+  <strong>Puntaje:</strong>
+  <%= @comentario.puntaje %>
+</p>
+
+<p>
+  <strong>User:</strong>
+  <%= @comentario.user %>
+</p>
+
+<p>
+  <strong>Restaurante:</strong>
+  <%= @comentario.restaurante %>
+</p>
+
+<p>
+  <strong>Plato:</strong>
+  <%= @comentario.plato %>
+</p>
+
+<% if can? :edit, @comentario and cannot? :manage, :all %>
+<%= link_to "<button class='normalbtn'>Editar</button>".html_safe, edit_comentario_path(@comentario) %> 
+<% end %>
+
+<%= link_to "<button class='normalbtn'>Volver</button>".html_safe, 'javascript:history.go(-1);' %>

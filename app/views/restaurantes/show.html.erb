@@ -1,0 +1,230 @@
+<h1 class='title'>  <strong><%= @restaurante.nombre %></strong> </h1>
+
+<p style="text-align: center;">
+<span class="glyphicon glyphicon-envelope"></span>
+  <%= @restaurante.email %>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+<span class="glyphicon glyphicon-map-marker"></span>
+  <%= @restaurante.direccion %>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+  <strong> Valoracion:</strong>
+  <%= @restaurante.valoracion %> <span class="glyphicon glyphicon-star"></span>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+  <span class="glyphicon glyphicon-phone-alt"></span> <%= @restaurante.telefono %>
+</p>
+
+<br>
+
+
+<% if can? :manage, Order and cannot? :manage, :all %>
+  <% if Order.exists?(:restaurante_id => @restaurante.id, :user_id => current_user.id, :estado => "haciendo pedido") %>
+    <% order = Order.find_by({:restaurante_id => @restaurante.id, :user_id => current_user.id, :estado => "haciendo pedido"}) %>
+    <% if order.plato.first %>
+
+<% order = current_user.order.find_by({:restaurante_id => @restaurante.id, :estado => "haciendo pedido"}) %>
+
+<% cantidades = {} %>
+<% precios = {} %>
+<% order.plato.each do |plato| %>
+  <% if not plato.nombre.in? cantidades.keys %>
+    <% cantidades[plato.nombre] = 1 %>
+    <% precios[plato.nombre] = plato.precio %>
+  <% else %>
+    <% cantidades[plato.nombre] = cantidades[plato.nombre] + 1 %>
+  <% end %>
+<% end %>
+
+<% total = 0 %>
+<% precios.keys.each do |plato| %>
+  <% total = total + precios[plato] * cantidades[plato] %>
+<% end %>
+
+<table class="table table-striped table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Plato</th>
+      <th>Precio unitario</th>
+      <th>Cantidad</th>
+      <th>Precio</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% cantidades.each do |plato_aux| %>
+      <tr>
+      <% plato = Plato.find_by({:nombre => plato_aux, :restaurante_id => @restaurante.id}) %>
+        <td><%= plato.nombre %></td>
+        <td><%= plato.precio %></td>
+        <td><%= cantidades[plato.nombre] %></td>
+        <td><%= plato.precio * cantidades[plato.nombre].to_i %></td>
+      </tr>
+    <% end %>
+    <tr><td></td><td></td><td></td><td></td></tr>
+  </tbody>
+  <br>
+  <tfoot>
+    <th> Total a pagar: </th>
+    <td><span class="glyphicon glyphicon-usd"></span><%= total %></td>
+    <td><%= link_to "<button class='btn btn-success'>Ir a pagar</button>".html_safe, pago_path(:restaurante_id => @restaurante.id) %></td>
+    <td><%= link_to "<button class='btn btn-warning' >Cancelar pedido</button>".html_safe, order, method: :delete, data: { confirm: 'Estas seguro?' } %></td>
+  </tfoot>
+</table>
+      
+    <% end %>
+  <% else %>
+    <% @order = Order.new(:user_id => current_user.id, :restaurante_id => @restaurante.id, :estado => "haciendo pedido") %>
+    <% @order.save %>
+    <% current_user.order.push(@order) %>
+    <% @restaurante.order.push(@order) %>
+    <% if Order.find_by({:restaurante_id => @restaurante.id, :user_id => current_user.id, :estado => "haciendo pedido"}).plato.first %>
+      <%= link_to "<button class='normalbtn'>Finalizar pedido</button>".html_safe, pago_path(:restaurante_id => @restaurante.id) %>
+    <% end %>
+  <% end %>
+<% end %>
+
+
+<%if @restaurante.plato.first%>
+
+<table class="table table-striped table-bordered table-condensed">
+
+  <tbody>
+      <% @restaurante.plato.each do |plato| %>
+      <% if plato.id > 0 %>
+
+      <tr>
+        <td> 
+        <% if plato.photo.attached? %>
+        <image src="<%= (url_for(plato.photo))%>", height="200px", width="200px"></image>
+        <% else %>
+        <p class="glyphicon glyphicon-cutlery", style="width:200px;height:200px;"></p>
+        <% end %>
+        </td>
+
+        <td>
+
+<table class="table table-striped table-bordered table-condensed">
+
+  <tbody>
+      <tr>
+        <td style="width:50%;"><h1><%= plato.nombre %></h1></td>
+      </tr>
+      <tr>
+        <td><%= plato.descripcion %></td>
+      </tr>
+      <tr>
+        <td><%= "Numero de personas:" %> <%= plato.n_personas %>
+        <p></p>
+        <span class="glyphicon glyphicon-usd"> </span> <%= plato.precio %></td>
+      </tr>
+      <tr>
+      <td>
+        <% if plato.valoracion < 0.5 %>
+        <span class="glyphicon glyphicon-star-empty"></span>
+        <span class="glyphicon glyphicon-star-empty"></span>
+        <span class="glyphicon glyphicon-star-empty"></span>
+        <span class="glyphicon glyphicon-star-empty"></span>
+        <span class="glyphicon glyphicon-star-empty"></span>
+        <% elsif plato.valoracion < 1.5 %>
+        <span class="glyphicon glyphicon-star"></span>
+        <span class="glyphicon glyphicon-star-empty"></span>
+        <span class="glyphicon glyphicon-star-empty"></span>
+        <span class="glyphicon glyphicon-star-empty"></span>
+        <span class="glyphicon glyphicon-star-empty"></span>
+        <% elsif plato.valoracion < 2.5 %>
+        <span class="glyphicon glyphicon-star"></span>
+        <span class="glyphicon glyphicon-star"></span>
+        <span class="glyphicon glyphicon-star-empty"></span>
+        <span class="glyphicon glyphicon-star-empty"></span>
+        <span class="glyphicon glyphicon-star-empty"></span>
+        <% elsif plato.valoracion < 3.5 %>
+        <span class="glyphicon glyphicon-star"></span>
+        <span class="glyphicon glyphicon-star"></span>
+        <span class="glyphicon glyphicon-star"></span>
+        <span class="glyphicon glyphicon-star-empty"></span>
+        <span class="glyphicon glyphicon-star-empty"></span>
+        <% elsif plato.valoracion < 4.5 %>
+        <span class="glyphicon glyphicon-star"></span>
+        <span class="glyphicon glyphicon-star"></span>
+        <span class="glyphicon glyphicon-star"></span>
+        <span class="glyphicon glyphicon-star"></span>
+        <span class="glyphicon glyphicon-star-empty"></span>
+        <% else %>
+        <span class="glyphicon glyphicon-star"></span>
+        <span class="glyphicon glyphicon-star"></span>
+        <span class="glyphicon glyphicon-star"></span>
+        <span class="glyphicon glyphicon-star"></span>
+        <span class="glyphicon glyphicon-star"></span>
+        <% end %>
+        <%= "("+plato.valoracion.to_s+")" %>
+        </td>
+        
+      </tr>
+  </tbody>
+</table>
+
+        </td>
+
+
+<td style="vertical-align: middle; text-align: center;">
+<% if current_user and cannot? :manage, :all %>
+<%= form_with(url: pedir_plato_path(plato), method: "post") do %>
+  <%= label_tag(:pet_dog, "Cantidad") %><br>
+  <%= number_field :cantidad, :cantidad %><br><br>
+  <%= submit_tag "Pedir plato", class: "btn btn-danger"%><br><br>
+  <% end %>
+  <% end %>
+<%= link_to "Ver plato", plato, class: "btn btn-warning" %></td>
+      </tr>
+    <% end %>
+    <% end %>
+  </tbody>
+</table>
+
+  <% else %>
+  <br>
+    <strong>El restaurante aun no tiene platos</strong><br>
+  <br>
+  <br>
+<% end %>
+
+
+
+<%if @restaurante.comentario.first %>
+ <table class="table table-striped table-bordered table-condensed">
+  <tr>
+    <th><strong>Comentarios:</strong></th>
+  </tr>
+
+  <% @restaurante.comentario.each do |comentario| %>
+  <tr>
+    <td class="td-name"><%= comentario.user.nombre+':' %></td>
+    <td><%= comentario.contenido %></td>
+    <td align='right'><%= comentario.fecha %></td>
+    <td align='left'><%= comentario.hora %></td>
+    <% if can? :edit, comentario %>
+    <td align='right', width='10%'><%= link_to "<button class='btn btn-primary'>Editar</button>".html_safe, edit_comentario_path(comentario) %></td>
+    <% end %>
+  </tr>
+  <% end %>
+</table> 
+<% else %>
+<br>
+  <strong>El restaurante aun no tiene comentarios</strong><br>
+
+<% end %>
+
+
+<% if current_user %>
+<% if can? :create, Comentario and cannot? :manage, :all %>
+<% @comentario = Comentario.new %>
+<%= render 'comentarios/form', comentario: @comentario %>
+<% end %>
+
+<br>
+<% if current_user.admin == false %>
+<% if @restaurante.nombre.in? current_user.rest_fav %>
+<%= link_to "<button class='btn btn-primary'>Eliminar de favoritos</button>".html_safe, delete_fav_path(:id => current_user.id, :nombre => @restaurante.nombre), method: :post %>
+<% else %>
+<%= link_to "<button class='btn btn-primary'>Agregar restaurantes a favoritos</button>".html_safe, add_fav_path(:id => current_user.id, :nombre => @restaurante.nombre), method: :post %>
+<% end %>
+<% end %>
+<% end %>
+
+<%= link_to "<button class='btn btn-primary'>Volver</button>".html_safe, 'javascript:history.go(-1);' %>

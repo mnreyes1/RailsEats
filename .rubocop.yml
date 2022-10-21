@@ -1,0 +1,21 @@
+AllCops:
+  Exclude:
+    - 'db/**/*'
+    - 'config/**/*'
+    - 'script/**/*'
+    - 'bin/{rails,rake}'
+    - 'vendor/**/*'
+    - 'spec/fixtures/**/*'
+    - 'tmp/**/*'
+
+Bundler:
+  Enabled: false
+
+Gemspec:
+  Enabled: false
+
+Style:
+  Enabled: false
+
+Metrics/LineLength:
+  Max: 100 

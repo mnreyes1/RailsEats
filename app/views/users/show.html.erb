@@ -1,0 +1,21 @@
+<p>
+  <strong>Nombre:</strong>
+  <%= @user.nombre %>
+</p>
+
+<p>
+  <strong>Correo:</strong>
+  <%= @user.email %>
+</p>
+
+<p>
+  <strong>Direccion:</strong>
+  <%= @user.direccion %>
+</p>
+
+<p>
+  <strong>Imagen:</strong>
+  <%= @user.imagen %>
+</p>
+
+<%= link_to "<button class='normalbtn'>Volver</button>".html_safe, 'javascript:history.go(-1);' %>

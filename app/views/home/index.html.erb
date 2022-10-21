@@ -1,0 +1,146 @@
+<h1>RailsEats</h1>
+
+<% if current_user %>
+<h2>Bienvenido <%= current_user.nombre %></h2>
+<% elsif current_restaurante %>
+<h3> Bienvenido <%= current_restaurante.nombre %></h3>
+<% else %>
+<h2>Bienvenido</h2>
+<% end %>
+
+<% if can? :manage, :all %>
+<h2>Modo Administrador</h2>
+<% end %>
+
+<% if not current_restaurante %>
+
+<table class="table table-striped table-bordered table-condensed">
+
+  <tbody>
+      <% @restaurantes = Restaurante.all %>
+      <% @restaurantes.each do |restaurante| %>
+      <% if restaurante.status == "aprobado" %>
+      <tr>
+        <td> 
+        <% if restaurante.photo.attached? %>
+        <image src="<%= (url_for(restaurante.photo))%>", height="200px", width="200px"></image>
+        <% else %>
+        <p class="glyphicon glyphicon-cutlery", style="width:200px;height:200px;"></p>
+        <% end %>
+        </td>
+
+        <td>
+
+<table class="table table-striped table-bordered table-condensed">
+
+  <tbody>
+      <tr>
+        <td style="width:50%;"><h1><%= restaurante.nombre %></h1></td>
+      </tr>
+      <tr>
+        <td> <span class="glyphicon glyphicon-envelope"></span> <%= restaurante.email %></td>
+      </tr>
+      <tr>
+        <td> <span class="glyphicon glyphicon-map-marker"></span> <%= restaurante.direccion %>
+        <p></p>
+        <span class="glyphicon glyphicon-phone-alt"> </span> <%= restaurante.telefono %></td>
+      </tr>
+      <tr>
+      <td>
+        <% if restaurante.valoracion < 0.5 %>
+        <span class="glyphicon glyphicon-star-empty"></span>
+        <span class="glyphicon glyphicon-star-empty"></span>
+        <span class="glyphicon glyphicon-star-empty"></span>
+        <span class="glyphicon glyphicon-star-empty"></span>
+        <span class="glyphicon glyphicon-star-empty"></span>
+        <% elsif restaurante.valoracion < 1.5 %>
+        <span class="glyphicon glyphicon-star"></span>
+        <span class="glyphicon glyphicon-star-empty"></span>
+        <span class="glyphicon glyphicon-star-empty"></span>
+        <span class="glyphicon glyphicon-star-empty"></span>
+        <span class="glyphicon glyphicon-star-empty"></span>
+        <% elsif restaurante.valoracion < 2.5 %>
+        <span class="glyphicon glyphicon-star"></span>
+        <span class="glyphicon glyphicon-star"></span>
+        <span class="glyphicon glyphicon-star-empty"></span>
+        <span class="glyphicon glyphicon-star-empty"></span>
+        <span class="glyphicon glyphicon-star-empty"></span>
+        <% elsif restaurante.valoracion < 3.5 %>
+        <span class="glyphicon glyphicon-star"></span>
+        <span class="glyphicon glyphicon-star"></span>
+        <span class="glyphicon glyphicon-star"></span>
+        <span class="glyphicon glyphicon-star-empty"></span>
+        <span class="glyphicon glyphicon-star-empty"></span>
+        <% elsif restaurante.valoracion < 4.5 %>
+        <span class="glyphicon glyphicon-star"></span>
+        <span class="glyphicon glyphicon-star"></span>
+        <span class="glyphicon glyphicon-star"></span>
+        <span class="glyphicon glyphicon-star"></span>
+        <span class="glyphicon glyphicon-star-empty"></span>
+        <% else %>
+        <span class="glyphicon glyphicon-star"></span>
+        <span class="glyphicon glyphicon-star"></span>
+        <span class="glyphicon glyphicon-star"></span>
+        <span class="glyphicon glyphicon-star"></span>
+        <span class="glyphicon glyphicon-star"></span>
+        <% end %>
+        <%= "("+restaurante.valoracion.to_s+")" %>
+        </td>
+        
+      </tr>
+  </tbody>
+</table>
+
+        </td>
+
+        <td style="vertical-align: middle;"><%= link_to "Ver Platos", restaurante, class: "btn btn-warning", style: "width: 100%;" %></td>
+      </tr>
+      <% end %>
+    <% end %>
+  </tbody>
+</table>
+
+<% end %>
+
+
+<% if current_restaurante %>
+
+<div class='container-show'>
+<p>
+  <strong>Correo:</strong>
+  <%= current_restaurante.email %>
+</p>
+
+<p>
+  <strong>Direccion:</strong>
+  <%= current_restaurante.direccion %>
+</p>
+
+<p>
+  <strong>Valoracion:</strong>
+  <%= current_restaurante.valoracion %>
+</p>
+
+<p>
+  <strong>Imagen:</strong>
+</p>
+<% if current_restaurante.photo.attached? %>
+  <image src="<%= (url_for(current_restaurante.photo))%>", height="200", width="200"></image>
+<% end %>
+
+
+<p>
+  <strong>Telefono:</strong>
+  <%= current_restaurante.telefono %>
+</p>
+
+<br>
+
+<% end %>
+
+<% orders = Order.all %>
+<% orders.each do |order| %>
+  <% if order.estado == "haciendo pedido" and not order.plato.first %>
+  <% order.destroy %>
+  <% end %>
+<% end %>

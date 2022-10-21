@@ -1,0 +1,35 @@
+<h1>Restaurantes Favoritos</h1>
+
+<table class="table table-hover">
+  <thead>
+    <tr>
+      <th>Nombre</th>
+      <th>Correo</th>
+      <th>Direccion</th>
+      <th>Valoracion</th>
+      <th>Imagen</th>
+      <th>Telefono</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% current_user.rest_fav.each do |restaurante_nombre| %>
+      <tr>
+      <% restaurante = Restaurante.find_by({:nombre => restaurante_nombre}) %>
+        <td><%= restaurante.nombre %></td>
+        <td><%= restaurante.email %></td>
+        <td><%= restaurante.direccion %></td>
+        <td><%= restaurante.valoracion %></td>
+        <td><%= restaurante.imagen %></td>
+        <td><%= restaurante.telefono %></td>
+        <td><%= link_to "<button class='btn btn-warning'>Ver</button>".html_safe, restaurante %></td>
+        <td><%= link_to "<button class='btn btn-danger'>Eliminar de favoritos</button>".html_safe, delete_fav_path(:id => current_user.id, :nombre => restaurante.nombre), method: :post %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to "<button class='btn btn-primary'>Volver</button>".html_safe,'javascript:history.go(-1);' %>

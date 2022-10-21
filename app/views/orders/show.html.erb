@@ -1,0 +1,71 @@
+<p>
+  <strong>Platos:</strong><br>
+  <% cantidades = {} %>
+  <% @order.plato.each do |plato| %>
+  <% if not plato.nombre.in? cantidades.keys %>
+    <% cantidades[plato.nombre] = 1 %>
+  <% else %>
+    <% cantidades[plato.nombre] = cantidades[plato.nombre] + 1 %>
+  <% end %>
+<% end %>
+  <% cantidades.keys.each do |key| %>
+  <%= key + " x "%>
+  <%= cantidades[key] %><br>
+  <% end %>
+</p>
+
+<p>
+  <strong>Precio:</strong>
+  <%= @order.precio %>
+</p>
+
+<p>
+  <strong>Medio pago:</strong>
+  <%= @order.medio_pago %>
+</p>
+
+<p>
+  <strong>Direccion:</strong>
+  <%= @order.direccion %>
+</p>
+
+<p>
+  <strong>Hora entrega:</strong>
+  <%= @order.hora_entrega %>
+</p>
+
+<p>
+  <strong>Estado:</strong>
+  <%= @order.estado %>
+</p>
+
+<p>
+  <strong>Info:</strong>
+  <%= @order.info %>
+</p>
+
+<p>
+  <strong>User:</strong>
+  <%= @order.user.nombre %>
+</p>
+
+<p>
+  <strong>Restaurante:</strong>
+  <%= @order.restaurante.nombre %>
+</p>
+
+<% if can? :edit, @order %>
+<% if current_restaurante %>
+<% if @order.estado == "pedido enviado a restaurante" %>
+<%= link_to "<button class='normalbtn'>Tomar pedido</button>".html_safe, edit_order_path(@order) %> 
+<% elsif @order.estado == "pedido tomado por restaurante" %>
+<%= link_to "<button class='normalbtn'>Enviar pedido</button>".html_safe, enviar_pedido_path(@order), method: :post %>
+<% end %>
+<% else %>
+<% if cannot? :manage, :all %>
+<%= link_to "<button class='normalbtn'>Editar</button>".html_safe, edit_order_path(@order) %> 
+<% end %>
+<% end %>
+<% end %>
+
+<%= link_to "<button class='normalbtn'>Volver</button>".html_safe, 'javascript:history.go(-1);' %>
